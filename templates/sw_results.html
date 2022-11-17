@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}
+    Character Results
+{% endblock %}
+
+{% block content %}
+    <div id="results">
+        <h1>Here are you results!</h1>
+        <p>Name: {{name}}</p>
+        <p>Height: {{height}}</p>
+        <p>Mass: {{mass}}</p>
+        <p>Hair Colour: {{hair_colour}}</p>
+        <p>Eye Colour: {{eye_colour}}</p>
+        <p>Home World: {{world}}</p>
+        {% for film in films %}
+            <li>{{film}}</li>
+        {% endfor %}
+    </div>
+{% endblock %}

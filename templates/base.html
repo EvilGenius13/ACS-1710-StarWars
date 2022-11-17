@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css" type="text/css">
+        <title>
+            {% block title %}{% endblock%}
+        </title>
+    </head>
+    <body>
+        <header>
+            <h1>Quiz 2</h1>
+            <br>
+        </header>
+        <main>
+            <div id="contents">
+            {% block content %}{% endblock %}
+            </div>
+        </main>
+        <footer>
+            <br>
+            <a href="http://127.0.0.1:5000">Home</a><br>
+            <a href="http://127.0.0.1:5000/starwars">Star Wars</a><br>
+        </footer>
+    </body>
+</html>

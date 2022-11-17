@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}
+    Star Wars API
+{% endblock %}
+
+{% block content %}
+    <h1>Fill out the form and see the results</h1>
+    <form action="/sw_results" method="GET">
+        <p>Please enter a character ID which is a number</p>
+        <input type="text" name="id">
+        <input type="submit" value="Submit!">
+    </form>
+{% endblock %}

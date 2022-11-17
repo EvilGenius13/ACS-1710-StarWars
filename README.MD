@@ -10,6 +10,7 @@ Flask app that serves up information from SWAPI (Star Wars API).
 - weight
 - hair color
 - eye color
+- home world
 - list of movies the character appears in
 
 ### Displays an error if ID cannot be found

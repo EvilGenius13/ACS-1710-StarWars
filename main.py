@@ -11,47 +11,54 @@ def homepage():
     return render_template('index.html')
 
 @server.route('/starwars')
-def chuck():
+def sw():
     return render_template('starwars.html')
 
-@server.route('/sw_results')
-def chuck_results():
-    # CHARACTER DATA #
-    character_id = request.args.get('id')
-    if (int(character_id) == 17) or (int(character_id) > 88) or (int(character_id) <= 0):
-        return render_template('error.html')
-    api_call = requests.get(f'https://swapi.py4e.com/api/people/{character_id}')
-    data_json = api_call.json()
-    name = data_json['name']
-    height = data_json['height']
-    mass = data_json['mass']
-    hair_colour = data_json['hair_color']
-    eye_colour = data_json['eye_color']
-    homeworld = data_json['homeworld']
-    films = data_json['films']
-    # HOMEWORLD DATA #
-    homeworld_api_call = requests.get(homeworld)
-    homeworld_data_json = homeworld_api_call.json()
-    homeworld_data = homeworld_data_json['name']
-    # FILM DATA # 
-    film_list = []
-    for film in films:
-        film_api_call = requests.get(film)
-        film_data_json = film_api_call.json()
-        film_data_title = film_data_json['title']
-        print('Test:', film_data_title)
-        film_list.append(film_data_title)
-    print(film_list)
-    # DATA TO SEND FOR RESULTS#
-    context = {
-        'name' : name,
-        'height': height,
-        'mass': mass,
-        'eye_colour': eye_colour,
-        'hair_colour': hair_colour,
-        'films': film_list,
-        'world': homeworld_data,
-    }
+@server.route('/sw_results', methods=['GET', 'POST'])
+def sw_results():
+    API = 'https://swapi.py4e.com/api/people/'
+    if request.method == 'POST':
+        character = request.form.get("id")
+        API = 'https://swapi.py4e.com/api/people/' + character  
+        try:            
+            response = requests.get(API)
+        except KeyError:
+            return render_template('error.html')
+        if json.loads(response.content).get('detail') == 'Not found':        
+            # give 'no data exists' API repsonse to render 404
+            return render_template('error.html')           
+        else:
+            # give 'data exists' API response to render received details 
+            # print(json.loads(response.content))
+            context = {
+                'name': json.loads(response.content).get('name'),
+                'height': json.loads(response.content).get('height'),
+                'mass': json.loads(response.content).get('mass'),
+                'hair_colour': json.loads(response.content).get('hair_color'),
+                'eye_colour': json.loads(response.content).get('eye_color'),
+            }
+            films_list = json.loads(response.content).get('films')
+            print(films_list)
+            # homeworld search 
+            try:
+                homeworld_response = requests.get(json.loads(response.content).get('homeworld'))
+                homeworld = json.loads(homeworld_response.content).get('name')
+                context['world'] = homeworld
+            except KeyError:
+                context['world'] = ''           
+            # movie search
+            movie_titles = []
+            try:
+                for film in films_list:
+                    film_response = requests.get(film)
+                    print(json.loads(film_response.content).get('title'))
+                    movie_titles.append(json.loads(film_response.content).get('title'))
+                context['films'] = movie_titles
+            except KeyError:
+                context['films'] = ''
+        return render_template('sw_results.html', **context)
+    else:
+        return render_template('sw_results.html')
     
     return render_template('sw_results.html', **context)
 
